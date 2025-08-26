@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// gcc -shared -o functTree.so -fPIC funct.c
+
 #define Error NULL 
 
 //  structura de arbore multicai
@@ -15,3 +17,5 @@ void AddChild(TTree parent, TTree new_node);
 void FreeTree(TTree tree);
 void printTree(TTree root, int level);
 void preorder(TTree root);
+int CountChild(TTree parent);
+TTree CheckValue(TTree root, int value);

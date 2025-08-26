@@ -1,11 +1,11 @@
 #include "struct.h"
 
-//  functie de creare a unui nod nod
+//  functie de creare a unui nou nod
 
 TTree CreateNode(int value) {
     TTree new_node = (TTree)malloc(sizeof(TNode));
     if ( !new_node ) {
-        printf("Eroare la adugarea noului nod");
+        printf("Eroare la crerea noului nod");
         return Error;
     }
     new_node->value = value;
@@ -16,10 +16,13 @@ TTree CreateNode(int value) {
 //  functie de adaugare a unui nod nod la arbore
 
 void AddChild(TTree parent, TTree new_node) {
+    if ( parent == NULL ) {
+        return;
+    }
     if ( !parent->left ) {
         parent->left = new_node;
     } else {
-        TTree iter = parent;
+        TTree iter = parent->left;
         while ( iter->right ) {
             iter = iter->right;
         }
@@ -52,10 +55,42 @@ void printTree(TTree root, int level) {
 }
 
 
-
 void preorder(TTree root) {
     if (!root) return;
     printf("%d ", root->value);
     preorder(root->left);   /* copii */
     preorder(root->right);  /* frati */
+}
+
+//  functie pentru calcularea numarului de copii al unui nod
+
+int CountChild(TTree parent) {
+    if ( parent == NULL ) {
+        return 0;
+    }
+    if ( !parent->left ) {
+        return 0;
+    }
+    TTree iter = parent->left;
+    int count = 0;
+    while( iter ) {
+        iter = iter->right;
+        count++;
+    }
+    return count;
+}
+
+//  functie pentru verificarea unui valori din arbore
+TTree CheckValue(TTree root, int value) {
+    if ( root == NULL ) {
+        return NULL;
+    }
+    if ( root->value == value ) {
+        return root;
+    }
+    TTree ChildCheck = CheckValue(root->left, value);
+    if ( ChildCheck != NULL ) {
+        return ChildCheck;
+    }
+    return  CheckValue(root->right, value);
 }
