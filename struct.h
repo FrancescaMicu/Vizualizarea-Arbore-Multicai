@@ -19,3 +19,7 @@ void printTree(TTree root, int level);
 void preorder(TTree root);
 int CountChild(TTree parent);
 TTree CheckValue(TTree root, int value);
+int* ObtSubTree(TTree parent, int *NrNodes);
+void RecSubTree(TTree parent, int *child, int *cnt);
+int FindParent(TTree node, TTree root);
+TTree RecParent(TTree child, TTree node);

@@ -18,7 +18,13 @@ ctree.CheckValue.argtypes = [c_void_p, c_int]
 ctree.CheckValue.restype = c_void_p
 
 ctree.preorder.argtypes = [c_void_p]
-ctree.preorder.restypes = None
+ctree.preorder.restype = None
+
+ctree.ObtSubTree.argtypes = [c_void_p, POINTER(c_int)]
+ctree.ObtSubTree.restype = POINTER(c_int)
+
+ctree.FindParent.argtypes = [c_void_p, c_void_p]
+ctree.FindParent.restype = c_int
 
 # functii pentru arbore
 global root
@@ -58,3 +64,43 @@ def CountChild(parent, root):
         print("Nu s-a putut gasi pointerul parintelui")
         return False
     return ctree.CountChild(parent_pt)
+
+def GetSubTree(parent, root):
+    parent_pt = FindNode(root, parent)
+    if not parent_pt:
+        print("Nu s-a putut gasi pointerul parintelui")
+        return []
+    NrNodes = c_int(0)
+    NodeArray = ctree.ObtSubTree(parent_pt, byref(NrNodes))
+    if not NodeArray:
+        print("Nu s-a putut face vectorul cu subarborele")
+        return []
+    NodeList = []
+    for i in range(1, NrNodes.value):
+        NodeList.append(NodeArray[i])
+    #de adaygat functie de eliberare vector
+    return NodeList
+
+def GetChild(parent, root):
+    parent_pt = FindNode(root, parent)
+    if not parent_pt:
+        print("Nu s-a putut gasi pointerul parintelui")
+        return []
+    NrNodes = c_int(0)
+    NodeArray = ctree.ObtSubTree(parent_pt, byref(NrNodes))
+    if not NodeArray:
+        print("Nu s-a putut face vectorul cu subarborele")
+        return []
+    NodeList = []
+    NrChild = CountChild(parent, root)
+    for i in range(1, NrChild + 1):
+        NodeList.append(NodeArray[i])
+    #de adaygat functie de eliberare vector
+    return NodeList
+
+def FindPar(child, root):
+    child_pt = FindNode(root, child)
+    if not child_pt:
+        print("Nu s-a putut gasi pointerul parintelui")
+        return False
+    return ctree.FindParent(child_pt, root)

@@ -94,3 +94,53 @@ TTree CheckValue(TTree root, int value) {
     }
     return  CheckValue(root->right, value);
 }
+
+//  functie pentru obtinerea subarborelui pornind de la un nod
+int* ObtSubTree(TTree parent, int *NrNodes) {
+    if ( parent == NULL ) {
+        return NULL;
+    }
+    TTree iter = parent;
+    int *child = (int*)malloc(100 * sizeof(int));
+    if ( child == NULL ) {
+        return NULL;
+    }
+    (*NrNodes) = 0;
+    RecSubTree(parent, child, NrNodes);
+    return child;
+}
+
+void RecSubTree(TTree parent, int *child, int *cnt) {
+    if ( parent == NULL ) {
+        return;
+    }
+    child[(*cnt)++] = parent->value;
+    RecSubTree(parent->left, child, cnt);
+    RecSubTree(parent->right, child, cnt);
+}
+
+int FindParent(TTree node, TTree root) {
+    if ( root == NULL || root == node || root == NULL ) {
+        return 0;
+    }
+    TTree parent = RecParent(node, root);
+    return parent->value;
+}
+
+TTree RecParent(TTree child, TTree node) {
+    if ( node == NULL ) {
+        return NULL;
+    }
+    TTree iter = node->left;
+    while ( iter ) {
+        if ( iter == child ) {
+            return node;
+        }
+        iter = iter->right;
+    }
+    TTree LeftTree = RecParent(child, node->left);
+    if ( LeftTree ) {
+        return LeftTree;
+    }
+    return RecParent(child, node->right);
+}
