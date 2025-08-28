@@ -26,9 +26,7 @@ int main() {
 
     AddChild(n7, n9);
 
-    printf("Parcurgere preordine:  ");
-    preorder(n1);
-    printf("\n");
+    printf("%d", DetLevel(n1, n7));
 
     FreeTree(n1);
     return 0;

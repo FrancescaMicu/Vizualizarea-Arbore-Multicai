@@ -23,3 +23,6 @@ int* ObtSubTree(TTree parent, int *NrNodes);
 void RecSubTree(TTree parent, int *child, int *cnt);
 int FindParent(TTree node, TTree root);
 TTree RecParent(TTree child, TTree node);
+int DetLevel(TTree root, TTree node);
+void RecLevel(TTree root, TTree node, int CurrLevel, int *lev);
+int CountChildOnLevel(TTree root, int DesLevel);

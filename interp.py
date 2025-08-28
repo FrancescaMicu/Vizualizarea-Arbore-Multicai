@@ -26,6 +26,12 @@ ctree.ObtSubTree.restype = POINTER(c_int)
 ctree.FindParent.argtypes = [c_void_p, c_void_p]
 ctree.FindParent.restype = c_int
 
+ctree.DetLevel.argtypes = [c_void_p, c_void_p]
+ctree.DetLevel.restype = c_int
+
+ctree.CountChildOnLevel.argtypes = [c_void_p, c_int]
+ctree.CountChildOnLevel.restype = c_int
+
 # functii pentru arbore
 global root
 
@@ -101,6 +107,16 @@ def GetChild(parent, root):
 def FindPar(child, root):
     child_pt = FindNode(root, child)
     if not child_pt:
-        print("Nu s-a putut gasi pointerul parintelui")
+        print("Nu s-a putut gasi pointerul nodului")
         return False
     return ctree.FindParent(child_pt, root)
+
+def FindLev(node, root):
+    node_pt = FindNode(root, node)
+    if not node_pt:
+        print("Nu s-a putut gasi pointerul nodului")
+        return False
+    return ctree.DetLevel(root, node_pt)
+
+def NrChildLevel(root, lev):
+    return ctree.CountChildOnLevel(root, lev)

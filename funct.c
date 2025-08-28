@@ -144,3 +144,52 @@ TTree RecParent(TTree child, TTree node) {
     }
     return RecParent(child, node->right);
 }
+
+int DetLevel(TTree root, TTree node) {
+    int lev = -1;
+    RecLevel(root, node, 0, &lev);
+    if ( lev == -1 ) {
+        printf("Eroare");
+        return 0;
+    }
+    return lev;
+}
+
+void RecLevel(TTree root, TTree node, int CurrLevel, int *lev) {
+    if ( root == NULL ) {
+        return;
+    }
+    if ( root == node ) {
+        (*lev) = CurrLevel;
+        return;
+    }
+    RecLevel(root->left, node, CurrLevel + 1, lev);
+    if ( (*lev) == -1 ) {
+        RecLevel(root->right, node, CurrLevel, lev);
+    }
+}
+
+int CountChildOnLevel(TTree root, int DesLevel) {
+    if ( root == NULL ) {
+        return 0;
+    }
+    int count = 0, CurrLevel = 0;
+    TTree iter = root;
+    while (CurrLevel < DesLevel && iter != NULL) {
+        iter = iter->left;
+        CurrLevel++;
+    }
+    if ( iter == NULL ) {
+        printf("Nu exista nivelul");
+        return 0;
+    }
+    while( iter ) {
+        TTree child = iter->left;
+        while( child ) {
+                count++;
+                child = child->right;
+            }
+        iter = iter->right;
+    }
+    return count;
+}
