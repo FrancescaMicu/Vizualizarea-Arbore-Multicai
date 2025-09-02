@@ -1,8 +1,7 @@
 from tkinter import *
 from interp import *
 
-# de rezolvat problema cu extinderea ecranului pentru nodurile depasesc ecranul
-# si pentru cand doua noduri sunt foarte apropiate si se asimileaza una pe alta;
+# de vazut daca pot sa fac widthul maxim din prima la canva
 # de afisat mesajele de erori pe widget
 # de rezolvat restul #
 # de vazut cu eliberarea de memorie
@@ -10,7 +9,7 @@ from interp import *
 
 
 #dictionar pentru a retine cati copii are fiecare nod
-NodesDet = {} #circle, line, text, coords, childIdx
+NodesDet = {} #circle, line, text, coords, childIdx, space
 
 def ErrorVer(parent, child, ErrorLabel):
     parent_pt = FindNode(root, parent)
@@ -56,22 +55,12 @@ def DeleteDrawSubTree(parent):
             VisTree.delete(NodesDet[str(node)]["text"])
 
 
-def calculate_position(PaWidth, ChildIdx, ChildCount, parent):
-    """Calculează poziția based on numărul de frați ai părintelui"""
-    # Găsește părintele părintelui (bunicul)
-    grandparent = FindPar(parent, root)
-    if not grandparent:
-        # Părintele este rădăcină
-        siblings_count = 1
-    else:
-        # Numără câți frați are părintele
-        siblings_count = CountChild(parent, root)
-    
-    base_space = 110
-    space = base_space * (siblings_count + 1)
-    
-    x = PaWidth + (ChildIdx - (ChildCount - 1) / 2) * space
-    return x
+def CalcWidth(PaWidth, ChildIdx, ChildCount, child):
+    if "space" not in NodesDet[child]:
+        NodesDet[child]["space"] = 110
+    sp = NodesDet[child]["space"]
+    ChWidth = PaWidth + (ChildIdx - (ChildCount - 1) / 2) * sp
+    return ChWidth
 
 def ReDrawSubTree(parent):
     SubTree = GetSubTree(parent, root)
@@ -86,7 +75,13 @@ def ReDrawSubTree(parent):
         PaWidth, PaHeight = NodesDet[str(ParNode)]["coords"]
         ChHeight = PaHeight + 75
 
-        ChWidth = calculate_position(PaWidth, ChildIdx, ChildCount, ParNode)
+        
+        NodeLev = FindLev(str(node), root)
+        NrMaxChildLev = DetMaxChildLev(root, NodeLev)
+        if NrMaxChildLev:
+            NodesDet[str(node)]["space"] = 110 * (NrMaxChildLev - 0.5)
+
+        ChWidth = CalcWidth(PaWidth, ChildIdx, ChildCount, str(node))
 
         ReSizeCanvas(ChWidth, ChHeight)
         if str(node) not in NodesDet:
@@ -110,6 +105,7 @@ def DrawNode(child, parent, ErrorLabel):
         NodesDet[child]["text"] = VisTree.create_text(250, 30, text = child, font = ("Times New Roman", 16))
         NodesDet[child]["line"] = 0
         NodesDet[child]["childIdx"] = 0
+        NodesDet[child]["space"] = 0
     else:
         ErrorVer(parent, child, ErrorLabel)
         if not NewChild(parent, child, root):
@@ -122,7 +118,7 @@ def DrawNode(child, parent, ErrorLabel):
         if ChildCount == 1:
             #determinare coordonate copil
             ChHeight = PaHeight + 75
-            ChWidth = calculate_position(PaWidth, 0, ChildCount, parent)
+            ChWidth = CalcWidth(PaWidth, 0, ChildCount, child)
             ReSizeCanvas(ChWidth, ChHeight)
 
             NodesDet[child]["circle"] = VisTree.create_oval(ChWidth - 25, ChHeight - 25, ChWidth + 25, ChHeight + 25, outline = "black", width = 3, fill = "white")
@@ -131,15 +127,17 @@ def DrawNode(child, parent, ErrorLabel):
 
             NodesDet[child]["line"] = DrawLine(PaWidth, PaHeight + 25, ChWidth, ChHeight - 25)
             NodesDet[child]["childIdx"] = 0
+            NodesDet[child]["space"] = 110
         else:
             NodesDet[child]["childIdx"] = CountChild(parent, root) - 1
 
             NodesDet[child]["circle"] = 0
             NodesDet[child]["text"] = 0
             NodesDet[child]["line"] = 0
+            NodesDet[child]["space"] = 110
 
-            DeleteDrawSubTree(parent)
-            ReDrawSubTree(parent)
+            DeleteDrawSubTree(RootValue)
+            ReDrawSubTree(RootValue)
     UpdateScrollRegion()
     
 # creare main widget

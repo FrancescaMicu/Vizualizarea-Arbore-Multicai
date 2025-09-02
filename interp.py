@@ -1,5 +1,4 @@
 from ctypes import *
-
 ctree = CDLL("./functTree.so")
 
 ctree.CreateNode.argtypes = [c_int]
@@ -31,6 +30,9 @@ ctree.DetLevel.restype = c_int
 
 ctree.CountChildOnLevel.argtypes = [c_void_p, c_int]
 ctree.CountChildOnLevel.restype = c_int
+
+ctree.MaxChildOnLevel.argtypes = [c_void_p, c_int]
+ctree.MaxChildOnLevel.restype = c_int
 
 # functii pentru arbore
 global root
@@ -120,3 +122,6 @@ def FindLev(node, root):
 
 def NrChildLevel(root, lev):
     return ctree.CountChildOnLevel(root, lev)
+
+def DetMaxChildLev(root, lev):
+    return ctree.MaxChildOnLevel(root, lev)

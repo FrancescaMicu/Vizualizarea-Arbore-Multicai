@@ -180,7 +180,6 @@ int CountChildOnLevel(TTree root, int DesLevel) {
         CurrLevel++;
     }
     if ( iter == NULL ) {
-        printf("Nu exista nivelul");
         return 0;
     }
     while( iter ) {
@@ -192,4 +191,27 @@ int CountChildOnLevel(TTree root, int DesLevel) {
         iter = iter->right;
     }
     return count;
+}
+
+int MaxChildOnLevel(TTree root, int DesLev) {
+    if ( root == NULL ) {
+        return 0;
+    }
+    int max = -1;
+    RecursMax(root, 0, DesLev, &max);
+    return max;
+}
+
+void RecursMax(TTree root, int CurrLev, int DesLevel, int *max) {
+    if ( root == NULL ) {
+        return;
+    }
+    if ( CurrLev == DesLevel ) {
+        int NrChild = CountChild(root);
+        if ( NrChild > (*max) ) {
+            (*max) = NrChild;
+        }
+    }
+    RecursMax(root->left, CurrLev + 1, DesLevel, max);
+    RecursMax(root->right, CurrLev, DesLevel, max);
 }
