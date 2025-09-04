@@ -3,7 +3,6 @@ from interp import *
 
 # de vazut daca pot sa fac widthul maxim din prima la canva
 # de rezolvat restul #
-# de vazut cu eliberarea de memorie
 # design?
 
 
@@ -20,21 +19,21 @@ def int_str(value):
 def ErrorVer(parent, child):
     ErrorLabel.config(text="")
     if not int_str(child):
-        ErrorLabel.config(text = "VALOAREA NODULUI INTRODUS NU ESTE NUMAR INTREG")
+        ErrorLabel.config(text = "VALOAREA NODULUI INTRODUS NU ESTE NUMĂR ÎNTREG")
         ErrorLabel.grid(row = 5, column = 0)
         return False
     if parent == '\0':
         return True
     if not FindNode(root, parent) and FindNode(root, child):
-        ErrorLabel.config(text = "NODUL PARINTE " + parent + " NU EXISTA\n" + "NODUL " + child + " DEJA EXISTA IN ARBORE")
+        ErrorLabel.config(text = "NODUL PĂRINTE " + parent + " NU EXISTĂ\n" + "NODUL " + child + " DEJA EXISTĂ ÎN ARBORE")
         ErrorLabel.grid(row = 5, column = 0)
         return False
     if not FindNode(root, parent):
-        ErrorLabel.config(text = "NODUL PARINTE " + parent + " NU EXISTA")
+        ErrorLabel.config(text = "NODUL PĂRINTE " + parent + " NU EXISTĂ")
         ErrorLabel.grid(row = 5, column = 0)
         return False
     if FindNode(root, child):
-        ErrorLabel.config(text = "NODUL " + child + " DEJA EXISTA IN ARBORE")
+        ErrorLabel.config(text = "NODUL " + child + " DEJA EXISTĂ ÎN ARBORE")
         ErrorLabel.grid(row = 5, column = 0)
         return False
     return True
@@ -162,18 +161,18 @@ def DrawNode(child, parent):
     
 # creare main widget
 mainWidget = Tk()
-mainWidget.title("Vizualizare Arbore Multicai")
+mainWidget.title("Vizualizare Arbore Multicăi")
 
 #crearea text pentru erori
 global ErrorLabel
 ErrorLabel = Label(mainWidget, text="", fg="red", font=("Times New Roman", 12, "bold"))
 
-IntroLabel1 = Label(mainWidget, text = "Interfata grafica pentru vizualizarea unui arbore multicai")
+IntroLabel1 = Label(mainWidget, text = "Interfață grafică pentru vizualizarea unui arbore multicăi")
 IntroLabel1.grid(row = 0, column = 0)
 
 # creare setari initiale pentru radacina
 
-RootLabel = Label(mainWidget, text = "Introdu valoarea nodului radacina")
+RootLabel = Label(mainWidget, text = "Introduceți valoarea nodului rădacina")
 RootLabel.grid(row = 1, column = 0)
 
 InpValueRoot = Entry(mainWidget)
@@ -225,7 +224,7 @@ def ButtonPressRootValue():
     InpFirstChild.grid(row = 3, column = 0)
 
     global ButtonFirstChild
-    ButtonFirstChild = Button(mainWidget, text = "Apasa", command = ButtonPressFirstChild)
+    ButtonFirstChild = Button(mainWidget, text = "Apasă", command = ButtonPressFirstChild)
     ButtonFirstChild.grid(row = 4, column = 0)
 
 def ButtonPressFirstChild():
@@ -243,7 +242,7 @@ def ButtonPressFirstChild():
         ButtonFirstChild.destroy()
 
     #crearea setari dupa introducerea radacinii si a primului copil
-    IntroLabel3 = Label(mainWidget, text = "Introdu valoarea nodului parinte si nodului copil")
+    IntroLabel3 = Label(mainWidget, text = "Introduceți valoarea nodului părinte și a nodului copil")
     IntroLabel3.grid(row = 1, column = 0)
 
     #creare input fiels pt copil-parinte
@@ -262,7 +261,7 @@ def ButtonPressFirstChild():
     InpChild.grid(row = 3, column = 0)
 
    # creare butoane pentru info copil-parinte
-    ButtonParentChild = Button(mainWidget, text = "Apasa", command = ButtonPressParentChild)
+    ButtonParentChild = Button(mainWidget, text = "Apasă", command = ButtonPressParentChild)
     ButtonParentChild.grid(row = 4, column = 0)
 
 def ButtonPressParentChild():
@@ -276,8 +275,8 @@ def ButtonPressParentChild():
 
     DrawNode(ChildValue, ParentValue)
 
-ButtonRootValue = Button(mainWidget, text = "Apasa", command = ButtonPressRootValue)
+ButtonRootValue = Button(mainWidget, text = "Apasă", command = ButtonPressRootValue)
 ButtonRootValue.grid(row = 2, column = 1)
 
-#Free(root)
 mainWidget.mainloop()
+Free(root)

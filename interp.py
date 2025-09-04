@@ -34,6 +34,9 @@ ctree.CountChildOnLevel.restype = c_int
 ctree.MaxChildOnLevel.argtypes = [c_void_p, c_int]
 ctree.MaxChildOnLevel.restype = c_int
 
+ctree.FreeIntArr.argtypes = [c_void_p]
+ctree.FreeIntArr.restype = None
+
 # functii pentru arbore
 global root
 
@@ -86,7 +89,7 @@ def GetSubTree(parent, root):
     NodeList = []
     for i in range(1, NrNodes.value):
         NodeList.append(NodeArray[i])
-    #de adaygat functie de eliberare vector
+    ctree.FreeIntArr(NodeArray)
     return NodeList
 
 def GetChild(parent, root):
@@ -103,7 +106,7 @@ def GetChild(parent, root):
     NrChild = CountChild(parent, root)
     for i in range(1, NrChild + 1):
         NodeList.append(NodeArray[i])
-    #de adaygat functie de eliberare vector
+    ctree.FreeIntArr(NodeArray)
     return NodeList
 
 def FindPar(child, root):

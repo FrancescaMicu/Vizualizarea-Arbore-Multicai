@@ -215,3 +215,8 @@ void RecursMax(TTree root, int CurrLev, int DesLevel, int *max) {
     RecursMax(root->left, CurrLev + 1, DesLevel, max);
     RecursMax(root->right, CurrLev, DesLevel, max);
 }
+
+void FreeIntArr(int *arr) {
+    free(arr);
+    arr = NULL;
+}

@@ -28,3 +28,4 @@ void RecLevel(TTree root, TTree node, int CurrLevel, int *lev);
 int CountChildOnLevel(TTree root, int DesLevel);
 int MaxChildOnLevel(TTree root, int DesLev);
 void RecursMax(TTree root, int CurrLev, int DesLevel, int *max);
+void FreeIntArr(int *arr);
