@@ -28,14 +28,20 @@ ctree.FindParent.restype = c_int
 ctree.DetLevel.argtypes = [c_void_p, c_void_p]
 ctree.DetLevel.restype = c_int
 
-ctree.CountChildOnLevel.argtypes = [c_void_p, c_int]
-ctree.CountChildOnLevel.restype = c_int
+ctree.CountNodesOnLevel.argtypes = [c_void_p, c_int]
+ctree.CountNodesOnLevel.restype = c_int
 
 ctree.MaxChildOnLevel.argtypes = [c_void_p, c_int]
 ctree.MaxChildOnLevel.restype = c_int
 
 ctree.FreeIntArr.argtypes = [c_void_p]
 ctree.FreeIntArr.restype = None
+
+ctree.LevWithMaxNodes.argtypes = [c_void_p]
+ctree.LevWithMaxNodes.restype = c_int
+
+ctree.FirstNodeOnDesLev.argtypes = [c_void_p, c_int]
+ctree.FirstNodeOnDesLev.restype = c_int
 
 # functii pentru arbore
 global root
@@ -124,7 +130,13 @@ def FindLev(node, root):
     return ctree.DetLevel(root, node_pt)
 
 def NrChildLevel(root, lev):
-    return ctree.CountChildOnLevel(root, lev)
+    return ctree.CountNodesOnLevel(root, lev + 1)
 
 def DetMaxChildLev(root, lev):
     return ctree.MaxChildOnLevel(root, lev)
+
+def FindLevWithMaxNodes(root):
+    return ctree.LevWithMaxNodes(root)
+
+def FindFirstNodeOnLev(root, lev):
+    return ctree.FirstNodeOnDesLev(root, lev)

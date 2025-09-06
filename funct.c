@@ -169,29 +169,26 @@ void RecLevel(TTree root, TTree node, int CurrLevel, int *lev) {
     }
 }
 
-int CountChildOnLevel(TTree root, int DesLevel) {
-    if ( root == NULL ) {
+int CountNodesOnLevel(TTree root, int DesLevel) {
+    if (root == NULL) {
         return 0;
     }
-    int count = 0, CurrLevel = 0;
-    TTree iter = root;
-    while (CurrLevel < DesLevel && iter != NULL) {
-        iter = iter->left;
-        CurrLevel++;
-    }
-    if ( iter == NULL ) {
-        return 0;
-    }
-    while( iter ) {
-        TTree child = iter->left;
-        while( child ) {
-                count++;
-                child = child->right;
-            }
-        iter = iter->right;
-    }
+    int count = 0;
+    RecCountNodesLev(root, DesLevel, 0, &count);
     return count;
 }
+
+void RecCountNodesLev(TTree root, int DesLev, int CurrLev, int *count) {
+    if ( root == NULL ) {
+        return;
+    }
+    if ( CurrLev == DesLev) {
+        (*count)++;
+    }
+    RecCountNodesLev(root->left, DesLev, CurrLev + 1, count);
+    RecCountNodesLev(root->right, DesLev, CurrLev, count);
+}
+
 
 int MaxChildOnLevel(TTree root, int DesLev) {
     if ( root == NULL ) {
@@ -219,4 +216,65 @@ void RecursMax(TTree root, int CurrLev, int DesLevel, int *max) {
 void FreeIntArr(int *arr) {
     free(arr);
     arr = NULL;
+}
+
+int LevWithMaxNodes(TTree root) {
+    if ( root == NULL ) {
+        return 0;
+    }
+    int NrLev = CountLev(root);
+    int MaxLev = 0;
+    int MaxChild = 0;
+    for ( int i = 0; i < NrLev; i++ ) {
+        int NrNodes = CountNodesOnLevel(root, i);
+        if ( NrNodes > MaxChild ) {
+            MaxChild = NrNodes;
+            MaxLev = i;
+        }
+    }
+    return MaxLev;
+}
+
+int CountLev(TTree root) {
+    if ( root == NULL ) {
+        return 0;
+    }
+    int lev = 0;
+    RecCountLev(root, 1, &lev);
+    return lev;
+}
+
+void RecCountLev(TTree root, int CurrLev, int *lev) {
+    if ( root == NULL ) {
+        return;
+    }
+    if ( (*lev) < CurrLev)
+        (*lev) = CurrLev;
+    RecCountLev(root->left, CurrLev + 1, lev);
+    RecCountLev(root->right, CurrLev, lev);
+}
+
+int RecFirstNodeDesLev(TTree root, int DesLev, int CurrLev) {
+    if ( root == NULL ) {
+        return -1;
+    }
+    if ( DesLev == CurrLev ) {
+        return root->value;
+    }
+    int LeftTree = RecFirstNodeDesLev(root->left, DesLev, CurrLev + 1);
+    if ( RecFirstNodeDesLev(root->left, DesLev, CurrLev + 1) != -1 ) {
+        return LeftTree;
+    }
+    return RecFirstNodeDesLev(root->right, DesLev, CurrLev);
+}
+
+int FirstNodeOnDesLev(TTree root, int DesLev) {
+    if ( root == NULL ) {
+        return 0;
+    }
+    int NodeValue = RecFirstNodeDesLev(root, DesLev, 0);
+    if ( NodeValue == -1 ) {
+        return 0;
+    }
+    return NodeValue;
 }

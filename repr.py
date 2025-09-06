@@ -1,13 +1,14 @@
 from tkinter import *
 from interp import *
+from customtkinter import *
 
 # de vazut daca pot sa fac widthul maxim din prima la canva
 # de rezolvat restul #
 # design?
 
-
 #dictionar pentru a retine cati copii are fiecare nod
 NodesDet = {} #circle, line, text, coords, childIdx, space
+
 
 def int_str(value):
     try:
@@ -17,48 +18,56 @@ def int_str(value):
         return False
 
 def ErrorVer(parent, child):
-    ErrorLabel.config(text="")
+    ErrorLabel.configure(text = "")
     if not int_str(child):
-        ErrorLabel.config(text = "VALOAREA NODULUI INTRODUS NU ESTE NUMĂR ÎNTREG")
-        ErrorLabel.grid(row = 5, column = 0)
+        ErrorLabel.configure(text = "VALOAREA NODULUI INTRODUS NU ESTE NUMĂR ÎNTREG")
+        ErrorLabel.grid(row = 5, column = 0, pady = 10)
         return False
     if parent == '\0':
         return True
     if not FindNode(root, parent) and FindNode(root, child):
-        ErrorLabel.config(text = "NODUL PĂRINTE " + parent + " NU EXISTĂ\n" + "NODUL " + child + " DEJA EXISTĂ ÎN ARBORE")
-        ErrorLabel.grid(row = 5, column = 0)
+        ErrorLabel.configure(text = "NODUL PĂRINTE " + parent + " NU EXISTĂ\n" + "NODUL " + child + " DEJA EXISTĂ ÎN ARBORE")
+        ErrorLabel.grid(row = 5, column = 0, pady = 10)
         return False
     if not FindNode(root, parent):
-        ErrorLabel.config(text = "NODUL PĂRINTE " + parent + " NU EXISTĂ")
-        ErrorLabel.grid(row = 5, column = 0)
+        ErrorLabel.configure(text = "NODUL PĂRINTE " + parent + " NU EXISTĂ")
+        ErrorLabel.grid(row = 5, column = 0, pady = 10)
         return False
     if FindNode(root, child):
-        ErrorLabel.config(text = "NODUL " + child + " DEJA EXISTĂ ÎN ARBORE")
-        ErrorLabel.grid(row = 5, column = 0)
+        ErrorLabel.configure(text = "NODUL " + child + " DEJA EXISTĂ ÎN ARBORE")
+        ErrorLabel.grid(row = 5, column = 0, pady = 10)
         return False
     return True
 
 def DestrErrorVar():
-    if not ErrorLabel["text"] == "":
+    if ErrorLabel.cget("text") != "":
         ErrorLabel.grid_forget()
-        ErrorLabel.config(text = "")
+        ErrorLabel.configure(text = "")
 
 def UpdateScrollRegion():
     VisTree.config(scrollregion = VisTree.bbox("all"))
 
-def ReSizeCanvas(x, y):
-    current_width = VisTree.winfo_width()
-    current_height = VisTree.winfo_height()
+def ReSizeCanvas(ChWidth, ChHeight):
+    FrWidth = VisTree.winfo_width()
+    FrHeight = VisTree.winfo_height()
+
+    ScrWidth = VisTree.winfo_screenwidth() - 300
+    ScrHeight = VisTree.winfo_screenheight() - 200
+
+    #testare width
+    if FrWidth >= ScrWidth or ChWidth + 100 < FrWidth:
+        NewWidth = FrWidth
+    else:
+        NewWidth = ChWidth + 150
+
+    #testare height
+    if FrHeight >= ScrHeight or ChHeight + 100 < FrHeight:
+        NewHeight = FrHeight
+    else:
+        NewHeight = ChHeight + 150
+        
     
-    new_width = current_width
-    new_height = current_height
-    
-    if x + 100 >= current_width:
-        new_width = x + 300
-    if y + 100 >= current_height:
-        new_height = y + 300
-    
-    VisTree.config(width=new_width, height=new_height)
+    VisTree.config(width = NewWidth, height = NewHeight)
 
 def DrawLine(PaWidth, PaHeight, ChWidth, ChHeight):
     return VisTree.create_line(PaWidth, PaHeight, ChWidth, ChHeight, width = 3)
@@ -158,26 +167,6 @@ def DrawNode(child, parent):
             DeleteDrawSubTree(RootValue)
             ReDrawSubTree(RootValue)
     UpdateScrollRegion()
-    
-# creare main widget
-mainWidget = Tk()
-mainWidget.title("Vizualizare Arbore Multicăi")
-
-#crearea text pentru erori
-global ErrorLabel
-ErrorLabel = Label(mainWidget, text="", fg="red", font=("Times New Roman", 12, "bold"))
-
-IntroLabel1 = Label(mainWidget, text = "Interfață grafică pentru vizualizarea unui arbore multicăi")
-IntroLabel1.grid(row = 0, column = 0)
-
-# creare setari initiale pentru radacina
-
-RootLabel = Label(mainWidget, text = "Introduceți valoarea nodului rădacina")
-RootLabel.grid(row = 1, column = 0)
-
-InpValueRoot = Entry(mainWidget)
-InpValueRoot.grid(row = 2, column = 0)
-
 
 def ButtonPressRootValue():
     DestrErrorVar()
@@ -200,13 +189,16 @@ def ButtonPressRootValue():
         return False
 
     global VisTree
-    VisTree = Canvas(mainWidget, height = 500, width = 500, bg = "grey", scrollregion=(0,0,1000,1000))
-    VisTree.grid(row = 7)
+    RightFrame = CTkFrame(mainWidget, width = 550, height = 600, corner_radius = 15, fg_color = "#CECECE")
+    RightFrame.pack(side = "right", fill = "both", expand = True, padx = 10, pady = 10)
 
-    x_scrollbar = Scrollbar(mainWidget, orient=HORIZONTAL, command=lambda *args: VisTree.xview(*args))
+    VisTree = Canvas(RightFrame, height = 500, width = 500, bg = "#C0C0C0", scrollregion=(0,0,1000,1000))
+    VisTree.grid(row = 7, pady = 10)
+
+    x_scrollbar = CTkScrollbar(RightFrame, orientation = HORIZONTAL, command = lambda *args: VisTree.xview(*args))
     x_scrollbar.grid(row=8, column=0, sticky="ew")
 
-    y_scrollbar = Scrollbar(mainWidget, orient=VERTICAL, command=lambda *args: VisTree.yview(*args))
+    y_scrollbar = CTkScrollbar(RightFrame, orientation = VERTICAL, command = lambda *args: VisTree.yview(*args))
     y_scrollbar.grid(row=7, column=1, sticky="ns")
 
     VisTree.config(xscrollcommand = x_scrollbar.set, yscrollcommand = y_scrollbar.set)
@@ -216,16 +208,16 @@ def ButtonPressRootValue():
 
     #creare setari pentru introducerea primului copil al radacinii
     global IntroLabel2 
-    IntroLabel2 = Label(mainWidget, text = "Introdu valoarea primului copil al nodului radacina")
-    IntroLabel2.grid(row = 1, column = 0)
+    IntroLabel2 = CTkLabel(LeftFrame, text = "Introduceți valoarea"+"\n"+"primului copil"+"\n"+"al nodului rădacină", font = ("Times New Roman", 24))
+    IntroLabel2.grid(row = 1, column = 0, pady = 10)
 
     global InpFirstChild 
-    InpFirstChild = Entry(mainWidget)
-    InpFirstChild.grid(row = 3, column = 0)
+    InpFirstChild = CTkEntry(LeftFrame, placeholder_text = "Valoarea nodului copil", width = 300, height = 30, font = ("Times New Roman", 24))
+    InpFirstChild.grid(row = 3, column = 0, pady = 10)
 
     global ButtonFirstChild
-    ButtonFirstChild = Button(mainWidget, text = "Apasă", command = ButtonPressFirstChild)
-    ButtonFirstChild.grid(row = 4, column = 0)
+    ButtonFirstChild = CTkButton(LeftFrame, text = "Apasă", command = ButtonPressFirstChild, width = 100)
+    ButtonFirstChild.grid(row = 4, column = 0, pady = 10)
 
 def ButtonPressFirstChild():
     DestrErrorVar()
@@ -234,7 +226,7 @@ def ButtonPressFirstChild():
     #adaugare prim copil
     DrawNode(FirstChildValue, RootValue)
 
-    if not ErrorLabel["text"] == "":
+    if ErrorLabel.cget("text") != "":
         return
     else:
         IntroLabel2.destroy()
@@ -242,27 +234,27 @@ def ButtonPressFirstChild():
         ButtonFirstChild.destroy()
 
     #crearea setari dupa introducerea radacinii si a primului copil
-    IntroLabel3 = Label(mainWidget, text = "Introduceți valoarea nodului părinte și a nodului copil")
-    IntroLabel3.grid(row = 1, column = 0)
+    IntroLabel3 = CTkLabel(LeftFrame, text = "Introduceți valoarea"+"\n"+"nodului părinte și"+"\n"+"a nodului copil", font = ("Times New Roman", 24))
+    IntroLabel3.grid(row = 1, column = 0, pady = 10)
 
     #creare input fiels pt copil-parinte
     global InpParent_var
     global InpChild_var 
 
-    InpParent_var = StringVar()
-    InpChild_var = StringVar()
-
     global InpParent
     global InpChild
-    InpParent = Entry(mainWidget, textvariable=InpParent_var)
-    InpChild = Entry(mainWidget, textvariable=InpChild_var)
+    InpParent = CTkEntry(LeftFrame, placeholder_text = "Valoarea nodului părinte", width = 300, height = 30, font = ("Times New Roman", 24))
+    InpChild = CTkEntry(LeftFrame, placeholder_text = "Valoarea nodului copil", width = 300, height = 30, font = ("Times New Roman", 24))
 
-    InpParent.grid(row = 2, column = 0)
-    InpChild.grid(row = 3, column = 0)
+    InpParent_var = InpParent.get().strip()
+    InpChild_var = InpChild.get().strip()
+
+    InpParent.grid(row = 2, column = 0, pady = 10)
+    InpChild.grid(row = 3, column = 0, pady = 10)
 
    # creare butoane pentru info copil-parinte
-    ButtonParentChild = Button(mainWidget, text = "Apasă", command = ButtonPressParentChild)
-    ButtonParentChild.grid(row = 4, column = 0)
+    ButtonParentChild = CTkButton(LeftFrame, text = "Apasă", command = ButtonPressParentChild, width = 100)
+    ButtonParentChild.grid(row = 4, column = 0, pady = 10)
 
 def ButtonPressParentChild():
     DestrErrorVar()
@@ -270,13 +262,41 @@ def ButtonPressParentChild():
     ChildValue = InpChild.get().strip()
     ParentValue = InpParent.get().strip()
 
-    InpChild_var.set("")
-    InpParent_var.set("")
+    InpChild.delete(0, END)
+    InpParent.delete(0, END)
 
     DrawNode(ChildValue, ParentValue)
+    
+# creare main widget
+mainWidget = CTk()
+mainWidget.title("Vizualizare Arbore Multicăi")
 
-ButtonRootValue = Button(mainWidget, text = "Apasă", command = ButtonPressRootValue)
-ButtonRootValue.grid(row = 2, column = 1)
+set_appearance_mode("system")
+set_default_color_theme("dark-blue")
+
+# creare frame=uri
+global LeftFrame
+LeftFrame = CTkFrame(mainWidget, width = 200, height = 600, corner_radius = 15, fg_color = "#CECECE")
+LeftFrame.pack(side = "left", fill = "both", expand = True, padx = 10, pady = 10)
+
+#crearea text pentru erori
+global ErrorLabel
+ErrorLabel = CTkLabel(LeftFrame, text = "", text_color = "red", font = ("Times New Roman", 26, "bold"))
+
+# IntroLabel = CTkLabel(LeftFrame, text = "Interfață grafică pentru vizualizarea unui arbore multicăi", font = ("Times New Roman", 24))
+# IntroLabel.grid(row = 0, column = 0, pady = 10)
+
+# creare setari initiale pentru radacina
+root = 0
+
+RootLabel = CTkLabel(LeftFrame, text = "Introduceți valoarea nodului rădacină", font = ("Times New Roman", 24))
+RootLabel.grid(row = 1, column = 0, pady = 10)
+
+InpValueRoot = CTkEntry(LeftFrame, placeholder_text = "Valoarea nodului rădacină", width = 300, height = 30, font = ("Times New Roman", 24))
+InpValueRoot.grid(row = 2, column = 0, pady = 10)
+
+ButtonRootValue = CTkButton(LeftFrame, text = "Apasă", command = ButtonPressRootValue, width = 100)
+ButtonRootValue.grid(row = 2, column = 1, pady = 10)
 
 mainWidget.mainloop()
 Free(root)

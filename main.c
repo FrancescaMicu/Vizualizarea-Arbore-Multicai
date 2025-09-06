@@ -12,6 +12,7 @@ int main() {
     TTree n7 = CreateNode(7);
     TTree n8 = CreateNode(8);
     TTree n9 = CreateNode(9);
+    TTree n10 = CreateNode(10);
 
     /* constructie arbore */
     AddChild(n1, n2);
@@ -25,8 +26,12 @@ int main() {
     AddChild(n4, n8);
 
     AddChild(n7, n9);
+    AddChild(n8, n10);
 
-    printf("%d", DetLevel(n1, n7));
+    printTree(n1, 0);
+    int node = -1;
+    printf("Level: %d\n", LevWithMaxNodes(n1, &node));
+    printf("Node: %d\n", node);
 
     FreeTree(n1);
     return 0;
