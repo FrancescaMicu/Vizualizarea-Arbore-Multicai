@@ -51,8 +51,8 @@ def ReSizeCanvas(ChWidth, ChHeight):
     FrWidth = VisTree.winfo_width()
     FrHeight = VisTree.winfo_height()
 
-    ScrWidth = VisTree.winfo_screenwidth() - 300
-    ScrHeight = VisTree.winfo_screenheight() - 200
+    ScrWidth = VisTree.winfo_screenwidth() - 100
+    ScrHeight = VisTree.winfo_screenheight() - 100
 
     #testare width
     if FrWidth >= ScrWidth or ChWidth + 100 < FrWidth:
@@ -102,11 +102,16 @@ def ReDrawSubTree(parent):
         PaWidth, PaHeight = NodesDet[str(ParNode)]["coords"]
         ChHeight = PaHeight + 75
 
-        
+        # TrHght = TreeHeight(root)
+        # CurrLev = FindLev(str(node), root)
+
+        # space = 110 * (TrHght - CurrLev)
+        # NodesDet[str(node)]["space"] = space
+
         NodeLev = FindLev(str(node), root)
-        NrMaxChildLev = DetMaxChildLev(root, NodeLev)
-        if NrMaxChildLev:
-            NodesDet[str(node)]["space"] = 110 * (NrMaxChildLev - 0.5)
+        NrChildOfLev = NrChildLevel(root, NodeLev)
+        if NrChildOfLev:
+            NodesDet[str(node)]["space"] = 110 * NrChildOfLev
 
         ChWidth = CalcWidth(PaWidth, ChildIdx, ChildCount, str(node))
 
@@ -156,6 +161,9 @@ def DrawNode(child, parent):
             NodesDet[child]["line"] = DrawLine(PaWidth, PaHeight + 25, ChWidth, ChHeight - 25)
             NodesDet[child]["childIdx"] = 0
             NodesDet[child]["space"] = 110
+
+            DeleteDrawSubTree(RootValue)
+            ReDrawSubTree(RootValue)
         else:
             NodesDet[child]["childIdx"] = CountChild(parent, root) - 1
 

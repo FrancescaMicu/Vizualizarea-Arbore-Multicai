@@ -43,6 +43,9 @@ ctree.LevWithMaxNodes.restype = c_int
 ctree.FirstNodeOnDesLev.argtypes = [c_void_p, c_int]
 ctree.FirstNodeOnDesLev.restype = c_int
 
+ctree.CountLev.argtypes = [c_void_p]
+ctree.CountLev.restype = c_int
+
 # functii pentru arbore
 global root
 
@@ -140,3 +143,6 @@ def FindLevWithMaxNodes(root):
 
 def FindFirstNodeOnLev(root, lev):
     return ctree.FirstNodeOnDesLev(root, lev)
+
+def TreeHeight(root):
+    return ctree.CountLev(root)
